@@ -1,0 +1,43 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('countinous_download_scm')
+        {
+            steps
+            {
+                git 'https://github.com/ashokkumar325/java.git'
+            }
+        }
+        stage('countinous_build')
+        {
+            steps
+            {
+                sh 'mvn package'
+            }
+        }
+        stage('countinous_deploy')
+        {
+            steps
+            {
+                sh '''scp /home/ubuntu/.jenkins/workspace/Dp1/webapp/target/webapp.war ubuntu@172.31.93.91:/var/lib/tomcat9/webapps.war'''
+            }
+        }
+        stage('countinous_testing')
+        {
+            steps
+            {
+                git 'https://github.com/ashokkumar325/Functionaltesting.git'
+                sh 'java -jar /home/ubuntu/.jenkins/workspace/Dp1/testing.jar'
+            }
+        }
+        stage('countinous_deliver_inprod')
+        {
+            steps
+            {
+                sh '''scp /home/ubuntu/.jenkins/workspace/Dp1/webapp/target/webapp.war ubuntu@172.31.94.209:/var/lib/tomcat9/webapps.war'''
+            }
+        }
+    }
+}
