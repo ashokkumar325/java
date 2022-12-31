@@ -1,0 +1,48 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('countinous_download_scm')
+        {
+            steps
+            {
+                git 'https://github.com/ashokkumar325/java.git'
+            }
+        }
+        stage('countinous_build')
+        {
+            steps
+            {
+                sh 'mvn package'
+            }
+        }
+        stage('countinous_deploy')
+        {
+            steps
+            {
+                deploy adapters: [tomcat9(credentialsId: '270900e5-8016-4ee4-9b16-356dff0be459', path: '', url: 'http://172.31.93.91:8080')], contextPath: 'tomee', war: '**/*.war'
+            }
+        }
+        stage('countinous_testing')
+        {
+            steps
+            {
+                git 'https://github.com/ashokkumar325/Functionaltesting.git'
+                sh 'java -jar /home/ubuntu/.jenkins/workspace/Dp1/testing.jar'
+            }
+        }
+        
+    }
+    post
+    {
+        success
+        {
+            deploy adapters: [tomcat9(credentialsId: '270900e5-8016-4ee4-9b16-356dff0be459', path: '', url: 'http://172.31.94.209:8080')], contextPath: 'mytomee', war: '**/*.war'
+        }
+        failure
+        {
+            mail bcc: '', body: 'This ci jenkins proces failed.', cc: '', from: '', replyTo: '', subject: 'CI failed', to: 'modiashok1997@gmail.com'
+        }
+    }
+}
