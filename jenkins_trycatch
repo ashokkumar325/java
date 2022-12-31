@@ -1,0 +1,103 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('countinous_download_scm')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                       git 'https://github.com/ashokkumar325/java.git' 
+                    }
+                    catch(Exception e1)
+                    {
+                       mail bcc: '', body: 'jenkins unable to download from git .', cc: '', from: '', replyTo: '', subject: 'download failed', to: 'dev.team@gmail.com'
+                       exit(1)
+                    }
+                }
+               
+            }
+        }
+        stage('countinous_build')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                       sh 'mvn package'
+                    }
+                    catch(Exception e2)
+                    {
+                       mail bcc: '', body: 'jenkins unable to create artifacts.', cc: '', from: '', replyTo: '', subject: 'artifacts failed', to: 'dev.team@gmail.com'
+                       exit(2)
+                    }
+                }
+                
+            }
+        }
+        stage('countinous_deploy')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                       deploy adapters: [tomcat9(credentialsId: '270900e5-8016-4ee4-9b16-356dff0be459', path: '', url: 'http://172.31.93.91:8080')], contextPath: 'tomee', war: '**/*.war'
+                    }
+                    catch(Exception e3)
+                    {
+                       mail bcc: '', body: 'jenkins unable to deploy on qa.', cc: '', from: '', replyTo: '', subject: 'deployfailed', to: 'middleware.team@gmail.com'
+                       exit(3)
+                    }
+                }
+               
+            }
+        }
+        stage('countinous_testing')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        git 'https://github.com/ashokkumar325/Functionaltesting.git'
+                        sh 'java -jar /home/ubuntu/.jenkins/workspace/Dp1/testing.jar'
+                    }
+                    catch(Exception e4)
+                    {
+                        mail bcc: '', body: 'testing failnd.', cc: '', from: '', replyTo: '', subject: 'testing failed', to: 'testing.team@gmail.com'
+                        exit(4)
+                    }
+                }
+                
+            }
+        }
+        stage('countinous_deliver_inprod')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        deploy adapters: [tomcat9(credentialsId: '270900e5-8016-4ee4-9b16-356dff0be459', path: '', url: 'http://172.31.94.209:8080')], contextPath: 'mytomee', war: '**/*.war'
+                    }
+                    catch(Exception e5)
+                    {
+                        mail bcc: '', body: 'jenkins unable deploye into prodservers.', cc: '', from: '', replyTo: '', subject: 'deploy failed', to: 'prod.team@gmail.com'
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+}
