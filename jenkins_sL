@@ -1,0 +1,59 @@
+@Library('newlibrary')_
+pipeline
+{  
+    agent any
+    stages
+    {
+        stage('countdown')
+        {
+            steps
+            {
+                script
+                {
+                    ci_cd.newGit("https://github.com/ashokkumar325/mymaven.git")
+                }
+            }
+        }
+        stage('countbuild')
+        {
+            steps
+            {
+                script
+                {
+                    ci_cd.newMaven()
+                }
+            }
+        }
+        stage('countdeploy')
+        {
+            steps
+            {
+                script
+                {
+                    ci_cd.newDeploy("Dp4","172.31.93.91","textapp")
+                }
+            }
+        }
+        stage('counttesting')
+        {
+            steps
+            {
+                script
+                {
+                    ci_cd.newGit("https://github.com/ashokkumar325/Functionaltesting.git")
+                    ci_cd.newSelenium("Dp4")
+                }
+            }
+        }
+        stage('countdeliver')
+        {
+            steps
+            {
+                script
+                {
+                    ci_cd.newDeploy("Dp4","172.31.94.209","prodapp")
+                }
+            }
+        }
+    }
+}
