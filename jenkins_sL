@@ -45,15 +45,5 @@ pipeline
                 }
             }
         }
-        stage('countdeliver')
-        {
-            steps
-            {
-                script
-                {
-                    ci_cd.newDeploy("Dp4","172.31.94.209","prodapp")
-                }
-            }
-        }
     }
 }
