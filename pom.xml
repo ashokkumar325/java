@@ -154,8 +154,8 @@
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
-          <artifactId>taglist-maven-plugin</artifactId>
-          <version>2.4</version>
+          <artifactId>taglist-maven-war-plugin</artifactId>
+          <version>2.2</version>
         </plugin>
 
         <plugin>
