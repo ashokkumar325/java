@@ -25,6 +25,16 @@
     <module>server</module>
     <module>webapp</module>
   </modules>
+	
+  <servers>
+        <server>
+            <id>my-internal-nexus-repo</id>
+            <username>yourUserName</username>
+            <password>yourPassword</password>
+        </server>
+  </servers>
+	
+	
 
   <distributionManagement>
     <site>
